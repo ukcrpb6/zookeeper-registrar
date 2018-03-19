@@ -1,0 +1,12 @@
+[package]
+name = "zookeeper-sync"
+version = "0.1.0"
+authors = ["Bob Browning <bob.browning@pressassociation.com>"]
+
+[dependencies]
+docopt = "0.8.3"
+log = "*"
+env_logger = "*"
+serde = "1.0"
+serde_derive = "1.0"
+zookeeper = "0.4.0"
