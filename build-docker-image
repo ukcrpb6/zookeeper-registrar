@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -euo pipefail
+
+BASE_DIR=$(pwd)
+IMAGE_NAME=pa-registry.transform.pacpservices.net/zookeeper-registrar
+TARGET=x86_64-unknown-linux-musl
+
+mkdir -p target/$TARGET/.cargo
+
+# Build static image
+docker run -v $PWD/target/$TARGET/.cargo:/root/.cargo -v $PWD:/volume -t clux/muslrust cargo build --release
+
+EXECUTABLE=target/${TARGET}/release/zookeeper-registrar
+
+# Pack executable
+docker run -v $PWD:/volume -t clux/muslrust strip --strip-unneeded $EXECUTABLE
+upx --best --ultra-brute $EXECUTABLE
+
+# Build docker image
+docker build -t ${IMAGE_NAME} -f docker/${TARGET}/Dockerfile .
+
+# Tag latest
+docker tag ${IMAGE_NAME} ${IMAGE_NAME}:latest

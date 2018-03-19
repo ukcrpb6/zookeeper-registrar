@@ -1,0 +1,6 @@
+
+{
+  "services": [
+    { "name": "name/of/service", "address": "localhost", "port": 8080 }
+  ]
+}
