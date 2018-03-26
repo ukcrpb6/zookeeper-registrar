@@ -9,5 +9,5 @@ pub struct Service {
   pub address: String,
   pub port: u16,
   #[serde(rename = "sslPort")]
-  pub ssl_port: Option<u16>,
+  pub ssl_port: Option<u16>
 }

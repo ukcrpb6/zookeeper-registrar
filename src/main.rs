@@ -101,6 +101,22 @@ fn register(instance: &ZooKeeper, services: Vec<Service>) -> Result<(), String> 
   for service in services {
     let data = ZkServiceRegistration::define(&service.name, &service.address, service.port);
 
+    let path_str = &format!("services/{}", &service.name);
+
+    let mut path = "".to_owned();
+    for component in path_str.split('/') {
+      path = format!("{}/{}", path, component);
+      if instance.exists(&path, false).map_err(|e| e.to_string())?.is_none() {
+        info!("Creating path {}", path);
+        instance.create(
+          &path,
+          vec![],
+          Acl::open_unsafe().clone(),
+          CreateMode::Persistent
+        ).map_err(|e| e.to_string())?;
+      }
+    }
+
     instance.create(
       &format!("/services/{}/{}", &service.name, data.id),
       serde_json::to_vec(&data).unwrap(),
